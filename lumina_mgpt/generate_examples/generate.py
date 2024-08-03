@@ -7,7 +7,7 @@ import argparse
 from PIL import Image
 import torch
 
-from inference_solver import VarARInferenceSolver
+from inference_solver import FlexARInferenceSolver
 from xllmx.util.misc import random_seed
 
 if __name__ == "__main__":
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     n = args.n
     w, h = args.width, args.height
 
-    inference_solver = VarARInferenceSolver(
+    inference_solver = FlexARInferenceSolver(
         model_path=args.model_path,
         precision="bf16",
     )

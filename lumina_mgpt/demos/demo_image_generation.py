@@ -14,7 +14,7 @@ import gradio as gr
 import torch
 
 from data.item_processor import generate_crop_size_list
-from inference_solver import VarARInferenceSolver
+from inference_solver import FlexARInferenceSolver
 from xllmx.util.misc import random_seed
 
 
@@ -65,7 +65,7 @@ def model_worker(
     #       f"using gpu: {gpu_id}")
     torch.cuda.set_device(gpu_id)
 
-    inference_solver = VarARInferenceSolver(
+    inference_solver = FlexARInferenceSolver(
         model_path=args.pretrained_path,
         precision=args.precision,
     )

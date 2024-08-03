@@ -52,7 +52,7 @@ def generate_crop_size_list(num_patches, patch_size, max_ratio=4.0):
     return crop_size_list
 
 
-class VarARItemProcessor(MMConvItemProcessor):
+class FlexARItemProcessor(MMConvItemProcessor):
     image_start_token = "<racm3:break>"  # fixed tokens for start and end, so can hardcode
     image_end_token = "<eoss>"
     full_sub_sep_token = "<reserved08796>"
@@ -201,99 +201,3 @@ class VarARItemProcessor(MMConvItemProcessor):
         )
         pixels = self.chameleon_vae._vq_model.decode(codebook_entry)
         return self.chameleon_vae._pil_from_chw_tensor(pixels[0])
-
-
-class FixARItemProcessor(MMConvItemProcessor):
-    image_start_token = "<racm3:break>"  # fixed tokens for start and end, so can hardcode
-    image_end_token = "<eoss>"
-    full_sub_sep_token = "<reserved08796>"
-    sub_sub_sep_token = "<reserved08797>"
-    sub_skip_token = "<reserved08798>"
-    new_line_token = "<reserved08799>"
-
-    def __init__(
-        self,
-        tokenizer="Alpha-VLLM/Lumina-mGPT-7B-768",
-        conv_template=Conversation,
-        target_size=512,
-    ):
-        if target_size != 512:
-            raise NotImplementedError("Only support 512 for now")
-        super().__init__(
-            {
-                "<|image|>": self.process_image,
-            },
-            ["<|image|>"],
-            tokenizer,
-            conv_template,
-        )
-        model = ChameleonForConditionalGeneration.from_pretrained(
-            "Alpha-VLLM/Lumina-mGPT-7B-768", torch_dtype=torch.bfloat16, device_map="cpu"
-        )
-        self.vqmodel = model.model.vqmodel.cuda().eval()
-        self.vocabulary_mapping = model.model.vocabulary_mapping
-        self.image_processor = ChameleonImageProcessor()
-
-    @staticmethod
-    def get_n_grids_token(n_grids):
-        return f"<reserved{8800 + n_grids:05d}>"
-
-    def token2id(self, token: str) -> int:
-        return self.tokenizer.tokenizer.vocab[token]
-
-    @torch.no_grad()
-    def process_image(self, image) -> Dict:
-        if isinstance(image, Image.Image):
-            pass
-        else:
-            image = Image.open(read_general(image))
-
-        # full image may be wrong
-        image_tensors = self.image_processor([image], return_tensors="pt")["pixel_values"]
-        image_tensors = image_tensors.cuda().bfloat16()
-
-        batch_size = image_tensors.shape[0]
-        _, _, image_toks = self.vqmodel.encode(image_tensors)
-        image_toks = self.vocabulary_mapping.convert_img2bpe(image_toks)
-        image_toks = image_toks.view(batch_size, -1)
-        full_image_toks = image_toks[0]
-
-        result_toks = [
-            self.token2id(self.image_start_token),
-            *full_image_toks.tolist(),
-            self.token2id(self.image_end_token),
-        ]
-
-        return {"input_ids": result_toks, "labels": result_toks}
-
-    def process_item(self, item, training_mode=False, out_flatten=True):
-        if not out_flatten:
-            return super().process_item(item, training_mode=training_mode)
-
-        if training_mode:
-            tokens, labels = super().process_item(item, training_mode=training_mode)
-            input_tokens_item = []
-            modified_labels_item = []
-            for i, (token_or_media, ori_label) in enumerate(zip(tokens, labels)):
-                if isinstance(token_or_media, int):
-                    token = token_or_media
-                    input_tokens_item.append(token)
-                    modified_labels_item.append(ori_label)
-                else:
-                    input_tokens_item += token_or_media["input_ids"]
-                    if ori_label <= 0:  # in the prompt part
-                        modified_labels_item += [-100] * len(token_or_media["input_ids"])
-                    else:
-                        modified_labels_item += token_or_media["labels"]
-
-            return input_tokens_item, modified_labels_item
-        else:
-            tokens = super().process_item(item, training_mode=training_mode)
-            input_tokens_item = []
-            for i, token_or_media in enumerate(tokens):
-                if isinstance(token_or_media, int):
-                    input_tokens_item.append(token_or_media)
-                else:
-                    input_tokens_item += token_or_media["input_ids"]
-
-            return input_tokens_item

@@ -9,7 +9,7 @@ import transformers
 from transformers import GenerationConfig, TextStreamer
 from transformers.generation.logits_process import LogitsProcessor, LogitsProcessorList, LogitsWarper
 
-from data.item_processor import FixARItemProcessor, VarARItemProcessor
+from data.item_processor import FixARItemProcessor, FlexARItemProcessor
 from model.chameleon import ChameleonForConditionalGeneration
 from model.chameleon_vae_ori.image_tokenizer import ImageTokenizer
 
@@ -267,7 +267,7 @@ class InterleavedTopKLogitsWarper(LogitsWarper):
         return scores_processed
 
 
-class InferenceSolver:
+class FlexARInferenceSolver:
     @classmethod
     def get_args_parser(cls):
         parser = argparse.ArgumentParser("xllmx Inference", add_help=False)
@@ -276,22 +276,13 @@ class InferenceSolver:
 
         return parser
 
-    def __init__(
-        self,
-        model_path,
-        precision,
-    ):
+    def __init__(self, model_path, precision, target_size=512):
         self.dtype = {"bf16": torch.bfloat16, "fp16": torch.float16, "fp32": torch.float32}[precision]
 
         self.model = ChameleonForConditionalGeneration.from_pretrained(
             model_path, torch_dtype=self.dtype, device_map="cuda"
         )
-        self.item_processor = FixARItemProcessor()
-        self.chameleon_vae = ImageTokenizer(
-            cfg_path="./ckpts/image_tokenizer/chameleon/vqgan.yaml",
-            ckpt_path="./ckpts/image_tokenizer/chameleon/vqgan.ckpt",
-            device="cuda",
-        )
+        self.item_processor = FlexARItemProcessor(with_decoder=True, target_size=target_size)
 
     def get_streamer(self):
         return TextStreamer(self.item_processor.tokenizer)
@@ -381,9 +372,7 @@ class InferenceSolver:
         return generated, generated_images
 
     def decode_image(self, tokens: List[int]):
-        tokens = [self.item_processor.vocabulary_mapping.bpe2img[_] for _ in tokens]
-        tokens = torch.tensor(tokens, dtype=torch.int64, device=self.model.device)
-        return self.chameleon_vae.pil_from_img_toks(tokens)
+        return self.item_processor.decode_image(tokens)
 
     @staticmethod
     def create_image_grid(images, rows, cols):
@@ -430,19 +419,6 @@ class InferenceSolver:
         logits_processor.append(topk_processor)
 
         return logits_processor
-
-
-class VarARInferenceSolver(InferenceSolver):
-    def __init__(self, model_path, precision, target_size=512):
-        self.dtype = {"bf16": torch.bfloat16, "fp16": torch.float16, "fp32": torch.float32}[precision]
-
-        self.model = ChameleonForConditionalGeneration.from_pretrained(
-            model_path, torch_dtype=self.dtype, device_map="cuda"
-        )
-        self.item_processor = VarARItemProcessor(with_decoder=True, target_size=target_size)
-
-    def decode_image(self, tokens: List[int]):
-        return self.item_processor.decode_image(tokens)
 
 
 if __name__ == "__main__":

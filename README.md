@@ -78,11 +78,11 @@ python -u demos/demo_freeform.py \
 ### Simple Inference
 The simplest code for Lumina-mGPT inference:
 ```python
-from inference_solver import VarARInferenceSolver
+from inference_solver import FlexARInferenceSolver
 from PIL import Image
 
 # ******************** Image Generation ********************
-inference_solver = VarARInferenceSolver(
+inference_solver = FlexARInferenceSolver(
     model_path="Alpha-VLLM/Lumina-mGPT-7B-768",
     precision="bf16",
     target_size=768,
@@ -104,7 +104,7 @@ a1, new_image = generated[0], generated[1][0]
 
 
 # ******************* Image Understanding ******************
-inference_solver = VarARInferenceSolver(
+inference_solver = FlexARInferenceSolver(
     model_path="Alpha-VLLM/Lumina-mGPT-7B-512",
     precision="bf16",
     target_size=512,
@@ -130,7 +130,7 @@ a1 = generated[0]
 
 
 # ********************* Omni-Potent *********************
-inference_solver = VarARInferenceSolver(
+inference_solver = FlexARInferenceSolver(
     model_path="Alpha-VLLM/Lumina-mGPT-7B-768-Omni",
     precision="bf16",
     target_size=768,
