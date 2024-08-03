@@ -1,6 +1,8 @@
 <div align="center">
 
-<h1> Lumina-mGPT </h1>
+# Lumina-mGPT
+
+<img src="assets/demos.png">
 
 <b> A family of multimodal autoregressive models capable of various vision and language tasks, particularly excelling in generating flexible photorealistic images from text descriptions. </b>
 
