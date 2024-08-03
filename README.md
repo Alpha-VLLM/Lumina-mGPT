@@ -31,7 +31,7 @@ LLM-centered multimodal tasks. Make sure it is installed correctly as a python p
 > to enter the directory of the Lumina-mGPT implementation.
 
 ### Perpetration
-Since currently the Chameleon implementation on Huggingface does not contain the VQ-VAE decoder, we need to manually download the original VQ-VAE weights [provided by Meta](https://github.com/facebookresearch/chameleon) and
+Since currently the Chameleon implementation in transformers does not contain the VQ-VAE decoder, please manually download the original VQ-VAE weights [provided by Meta](https://github.com/facebookresearch/chameleon) and
 put them to the following directory:
 ```
 Lumina-mGPT
@@ -46,8 +46,7 @@ Lumina-mGPT
 ```
 
 ### Local Gradio Demos
-We have prepared three different Gradio demos with different functionalities to make you quickly
-familiar the ability of Lumina-mGPT models.
+We have prepared three different Gradio demos, each showcasing unique functionalities, to help you quickly become familiar with the capabilities of the Lumina-mGPT models.
 
 #### 1. [demos/demo_image_generation.py](./Lumina-mGPT/demos/demo_image_generation.py)
 This demo is customized for Image Generation tasks, where you can input a text description and generate a corresponding image.
