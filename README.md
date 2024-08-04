@@ -4,14 +4,14 @@
 
 # Lumina-mGPT
 
-<img src="assets/demos.png">
-
 <b> A family of multimodal autoregressive models capable of various vision and language tasks, particularly excelling in generating flexible photorealistic images from text descriptions. </b>
 
 [![Static Badge](https://img.shields.io/badge/Official(node1)-6B88E3?logo=youtubegaming&label=Demo%20Lumina-mGPT)](http://106.14.2.150:10020/)&#160;
 [![Static Badge](https://img.shields.io/badge/Official(node2)-6B88E3?logo=youtubegaming&label=Demo%20Lumina-mGPT)](http://106.14.2.150:10021/)&#160;
 
 </div>
+
+<img src="assets/demos.png">
 
 ## 📰 News
 **[2024-07-08] 🎉🎉🎉 Lumina-mGPT is released! 🎉🎉🎉**
