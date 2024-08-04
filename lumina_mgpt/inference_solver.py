@@ -9,9 +9,8 @@ import transformers
 from transformers import GenerationConfig, TextStreamer
 from transformers.generation.logits_process import LogitsProcessor, LogitsProcessorList, LogitsWarper
 
-from data.item_processor import FixARItemProcessor, FlexARItemProcessor
+from data.item_processor import FlexARItemProcessor
 from model.chameleon import ChameleonForConditionalGeneration
-from model.chameleon_vae_ori.image_tokenizer import ImageTokenizer
 
 
 class LLMImageStartTriggeredUnbatchedClassifierFreeGuidanceLogitsProcessor(LogitsProcessor):
@@ -422,6 +421,6 @@ class FlexARInferenceSolver:
 
 
 if __name__ == "__main__":
-    parser = InferenceSolver.get_args_parser()
+    parser = FlexARInferenceSolver.get_args_parser()
     args = parser.parse_args()
-    solver = InferenceSolver(**vars(args))
+    solver = FlexARInferenceSolver(**vars(args))

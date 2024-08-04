@@ -1,3 +1,4 @@
+import json
 import logging
 import random
 from typing import Dict, List
@@ -6,9 +7,7 @@ from PIL import Image
 import torch
 
 from data.convertsation import Conversation
-from model.chameleon.image_processing_chameleon import ChameleonImageProcessor
-from model.chameleon.modeling_chameleon import ChameleonForConditionalGeneration
-from model.chameleon_vae_ori.image_tokenizer import ImageTokenizer
+import model.chameleon_vae_ori as chameleon_vae_ori
 from xllmx.data.data_reader import read_general
 from xllmx.data.item_processor import MMConvItemProcessor
 
@@ -76,12 +75,6 @@ class FlexARItemProcessor(MMConvItemProcessor):
             tokenizer,
             conv_template,
         )
-        model = ChameleonForConditionalGeneration.from_pretrained(
-            "Alpha-VLLM/Lumina-mGPT-7B-768", torch_dtype=torch.bfloat16, device_map="cpu"
-        )
-        self.vqmodel = model.model.vqmodel.cuda().eval()
-        self.vocabulary_mapping = model.model.vocabulary_mapping
-        self.image_processor = ChameleonImageProcessor(do_resize=False, do_center_crop=False)
 
         self.patch_size = 32
         self.crop_size_list = generate_crop_size_list((target_size // self.patch_size) ** 2, self.patch_size)
@@ -89,12 +82,18 @@ class FlexARItemProcessor(MMConvItemProcessor):
         for i in range(0, len(self.crop_size_list), 6):
             logger.info(" " + "".join([f"{f'{w} x {h}':14s}" for w, h in self.crop_size_list[i : i + 6]]))
 
-        if with_decoder:
-            self.chameleon_vae = ImageTokenizer(
-                cfg_path="./ckpts/image_tokenizer/chameleon/vqgan.yaml",
-                ckpt_path="./ckpts/image_tokenizer/chameleon/vqgan.ckpt",
-                device="cuda",
-            )
+        #  todo
+        #  currently still use the original image tokenizer provided by Meta rather than transformers
+        #  because the transformers implementation does not contain the vae decoder
+        self.chameleon_ori_vocab = chameleon_vae_ori.VocabInfo(
+            json.load(open("./ckpts/chameleon/tokenizer/text_tokenizer.json"))["model"]["vocab"]
+        )
+        self.chameleon_ori_translation = chameleon_vae_ori.VocabTranslation(self.chameleon_ori_vocab, device="cuda")
+        self.chameleon_ori_image_tokenizer = chameleon_vae_ori.ImageTokenizer(
+            cfg_path="./ckpts/chameleon/tokenizer/vqgan.yaml",
+            ckpt_path="./ckpts/chameleon/tokenizer/vqgan.ckpt",
+            device="cuda",
+        )
 
     @staticmethod
     def get_n_grids_token(n_grids):
@@ -114,14 +113,11 @@ class FlexARItemProcessor(MMConvItemProcessor):
 
         w_grids, h_grids = image.size[0] // self.patch_size, image.size[1] // self.patch_size
 
-        image_tensors = self.image_processor([image], return_tensors="pt")["pixel_values"]
-        image_tensors = image_tensors.cuda().bfloat16()
+        image_toks = self.chameleon_ori_translation.convert_img2bp2(
+            self.chameleon_ori_image_tokenizer.img_tokens_from_pil(image)
+        ).view(-1)
 
-        batch_size = image_tensors.shape[0]
-        _, _, image_toks = self.vqmodel.encode(image_tensors)
-        image_toks = self.vocabulary_mapping.convert_img2bpe(image_toks)
-        image_toks = image_toks.view(batch_size, -1)
-        full_image_toks = image_toks[0].reshape(image.size[1] // 16, image.size[0] // 16)
+        full_image_toks = image_toks.reshape(image.size[1] // 16, image.size[0] // 16)
         new_line_id = self.token2id(self.new_line_token)
 
         full_image_toks = torch.cat(
@@ -188,16 +184,11 @@ class FlexARItemProcessor(MMConvItemProcessor):
 
         for i in range(len(tokens)):
             if (i + 1) % (w_latent_dim + 1) != 0:
-                tokens[i] = self.vocabulary_mapping.bpe2img[tokens[i]]
+                tokens[i] = self.chameleon_ori_translation.bpe2img[tokens[i]]
 
         assert len(tokens) == h_latent_dim * (w_latent_dim + 1)
         tokens = torch.tensor(tokens, dtype=torch.int64).cuda()
 
         tokens = tokens.view(h_latent_dim, w_latent_dim + 1)[:, :-1].flatten()
 
-        emb_dim = self.chameleon_vae._vq_model.quantize.embedding.weight.shape[-1]
-        codebook_entry = self.chameleon_vae._vq_model.quantize.get_codebook_entry(
-            tokens, (1, h_latent_dim, w_latent_dim, emb_dim)
-        )
-        pixels = self.chameleon_vae._vq_model.decode(codebook_entry)
-        return self.chameleon_vae._pil_from_chw_tensor(pixels[0])
+        return self.chameleon_ori_image_tokenizer.pil_from_img_toks(tokens, h_latent_dim, w_latent_dim)

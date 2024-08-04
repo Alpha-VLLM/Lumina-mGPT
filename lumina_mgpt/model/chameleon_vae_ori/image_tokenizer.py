@@ -61,30 +61,35 @@ class ImageTokenizer:
         vals_rgb = (1 - alpha[:, :, np.newaxis]) * 255 + alpha[:, :, np.newaxis] * vals_rgba[:, :, :3]
         return PIL.Image.fromarray(vals_rgb.astype("uint8"), "RGB")
 
-    def _vqgan_input_from(self, img: PIL.Image, target_image_size=512) -> torch.Tensor:
-        # Resize with aspect ratio preservation.
-        s = min(img.size)
-        scale = target_image_size / s
-        new_size = (round(scale * img.size[0]), round(scale * img.size[1]))
-        img = img.resize(new_size, PIL.Image.LANCZOS)
+    # def _vqgan_input_from(self, img: PIL.Image, target_image_size=512) -> torch.Tensor:
+    #     # Resize with aspect ratio preservation.
+    #     s = min(img.size)
+    #     scale = target_image_size / s
+    #     new_size = (round(scale * img.size[0]), round(scale * img.size[1]))
+    #     img = img.resize(new_size, PIL.Image.LANCZOS)
+    #
+    #     # Center crop.
+    #     x0 = (img.width - target_image_size) // 2
+    #     y0 = (img.height - target_image_size) // 2
+    #     img = img.crop((x0, y0, x0 + target_image_size, y0 + target_image_size))
+    #
+    #     # Convert to tensor.
+    #     np_img = np.array(img) / 255.0  # Normalize to [0, 1]
+    #     np_img = np_img * 2 - 1  # Scale to [-1, 1]
+    #     tensor_img = torch.from_numpy(np_img).permute(2, 0, 1).float()  # (Channels, Height, Width) format.
+    #
+    #     # Add batch dimension.
+    #     return tensor_img.unsqueeze(0)
 
-        # Center crop.
-        x0 = (img.width - target_image_size) // 2
-        y0 = (img.height - target_image_size) // 2
-        img = img.crop((x0, y0, x0 + target_image_size, y0 + target_image_size))
-
+    def img_tokens_from_pil(self, img: PIL.Image) -> list[int]:
+        img = self._whiten_transparency(img)
         # Convert to tensor.
         np_img = np.array(img) / 255.0  # Normalize to [0, 1]
         np_img = np_img * 2 - 1  # Scale to [-1, 1]
-        tensor_img = torch.from_numpy(np_img).permute(2, 0, 1).float()  # (Channels, Height, Width) format.
+        img = torch.from_numpy(np_img).permute(2, 0, 1).to(self._vq_model.encoder.conv_in.weight)
+        img = img.unsqueeze(0)
 
-        # Add batch dimension.
-        return tensor_img.unsqueeze(0)
-
-    def img_tokens_from_pil(self, image: PIL.Image) -> list[int]:
-        image = self._whiten_transparency(image)
-        vqgan_input = self._vqgan_input_from(image).to(self._device).to(self._dtype)
-        _, _, [_, _, img_toks] = self._vq_model.encode(vqgan_input)
+        _, _, [_, _, img_toks] = self._vq_model.encode(img)
         return img_toks
 
     def _pil_from_chw_tensor(self, chw_tensor: torch.Tensor) -> PIL.Image:
@@ -109,8 +114,19 @@ class ImageTokenizer:
 
         return pil_image
 
-    def pil_from_img_toks(self, img_tensor: torch.Tensor) -> PIL.Image:
+    def pil_from_img_toks(self, tokens: torch.Tensor, h_latent_dim=32, w_latent_dim=32) -> PIL.Image:
         emb_dim = self._vq_model.quantize.embedding.weight.shape[-1]
-        codebook_entry = self._vq_model.quantize.get_codebook_entry(img_tensor, (1, 32, 32, emb_dim))
+        codebook_entry = self._vq_model.quantize.get_codebook_entry(tokens, (1, h_latent_dim, w_latent_dim, emb_dim))
         pixels = self._vq_model.decode(codebook_entry)
         return self._pil_from_chw_tensor(pixels[0])
+
+    def latent_embedding_from_pil(self, img: PIL.Image):
+        img = self._whiten_transparency(img)
+
+        # Convert to tensor.
+        np_img = np.array(img) / 255.0  # Normalize to [0, 1]
+        np_img = np_img * 2 - 1  # Scale to [-1, 1]
+        img = torch.from_numpy(np_img).permute(2, 0, 1)  # (Channels, Height, Width) format.
+        img = img.unsqueeze(0).to(self._vq_model.encoder.conv_in.weight)
+        latent_embedding, _, _ = self._vq_model.encode(img)
+        return latent_embedding
