@@ -172,7 +172,7 @@ def gradio_worker(
                         seed = gr.Slider(
                             minimum=0,
                             maximum=int(1e5),
-                            value=1,
+                            value=300,
                             step=1,
                             interactive=True,
                             label="Seed (0 for random)",
@@ -190,7 +190,7 @@ def gradio_worker(
                         cfg = gr.Slider(
                             minimum=0.0,
                             maximum=16.0,
-                            value=4.0,
+                            value=3.0,
                             interactive=True,
                             label="cfg",
                         )
@@ -198,7 +198,7 @@ def gradio_worker(
                         image_top_k = gr.Slider(
                             minimum=0,
                             maximum=8192,
-                            value=2000,
+                            value=4000,
                             interactive=True,
                             label="Image Top-k",
                         )
@@ -209,7 +209,9 @@ def gradio_worker(
                     label="Generated image",
                     interactive=False,
                 )
-                real_prompt = gr.Textbox(label="Real Prompt", interactive=False, visible=False)
+                real_prompt = gr.Textbox(
+                    label="Real Prompt", interactive=False, visible=False, show_label=True, show_copy_button=True
+                )
 
         prompt.submit(check_input_sanity, [prompt], []).success(
             stream_model_output, [prompt, resolution, seed, gen_t, cfg, image_top_k], [output_img, real_prompt]

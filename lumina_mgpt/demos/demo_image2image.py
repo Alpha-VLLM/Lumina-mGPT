@@ -232,7 +232,14 @@ def gradio_worker(
                     label="Generated image",
                     interactive=False,
                 )
-                real_prompt = gr.Textbox(label="Real Prompt", interactive=False, visible=False)
+                real_prompt = gr.Textbox(
+                    label="Real Prompt",
+                    interactive=False,
+                    visible=False,
+                    lines=5,
+                    show_label=True,
+                    show_copy_button=True,
+                )
 
         task.change(updateUIForTask, task, prompt)
 

@@ -39,8 +39,9 @@ put them to the following directory:
 Lumina-mGPT
 - lumina_mgpt/
     - ckpts/
-        - image_tokenizer
-            - chameleon
+        - chameleon/
+            - tokenizer/
+                - text_tokenizer.json
                 - vqgan.yaml
                 - vqgan.ckpt
 - xllmx/
