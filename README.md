@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="assets/logo.png" width="30%"/>
+
 # Lumina-mGPT
 
 <img src="assets/demos.png">
