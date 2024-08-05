@@ -176,7 +176,7 @@ new_image = generated[1][0]
 
 | Model        | Size | Huggingface                                                  |
 | ------------ | ---- | ------------------------------------------------------------ |
-| FP-SFT@512   | 30B  | [Alpha-VLLM/Lumina-mGPT-30B-512](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-30B-512) |
+| FP-SFT@512   | 34B  | [Alpha-VLLM/Lumina-mGPT-34B-512](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-34B-512) |
 
 More checkpoints coming soon.
 
