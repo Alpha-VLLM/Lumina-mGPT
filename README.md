@@ -6,7 +6,7 @@
 
 `<b>` A family of multimodal autoregressive models capable of various vision and language tasks, particularly excelling in generating flexible photorealistic images from text descriptions. `</b>`
 
-[![Lumina-Next](https://img.shields.io/badge/Paper-Lumina--Next-2b9348.svg?logo=arXiv)](https://arxiv.org/abs/2408.02657)&#160;
+[![Lumina-mGPT](https://img.shields.io/badge/Paper-Lumina--mGPT-2b9348.svg?logo=arXiv)](https://arxiv.org/abs/2408.02657)&#160;
 
 [![Static Badge](https://img.shields.io/badge/Official(node1)-6B88E3?logo=youtubegaming&label=Demo%20Lumina-mGPT)](http://106.14.2.150:10020/)&#160;
 [![Static Badge](https://img.shields.io/badge/Official(node2)-6B88E3?logo=youtubegaming&label=Demo%20Lumina-mGPT)](http://106.14.2.150:10021/)&#160;
