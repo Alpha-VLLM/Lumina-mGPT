@@ -4,7 +4,9 @@
 
 # Lumina-mGPT
 
-<b> A family of multimodal autoregressive models capable of various vision and language tasks, particularly excelling in generating flexible photorealistic images from text descriptions. </b>
+`<b>` A family of multimodal autoregressive models capable of various vision and language tasks, particularly excelling in generating flexible photorealistic images from text descriptions. `</b>`
+
+[![Lumina-Next](https://img.shields.io/badge/Paper-Lumina--Next-2b9348.svg?logo=arXiv)](https://arxiv.org/abs/2408.02657)&#160;
 
 [![Static Badge](https://img.shields.io/badge/Official(node1)-6B88E3?logo=youtubegaming&label=Demo%20Lumina-mGPT)](http://106.14.2.150:10020/)&#160;
 [![Static Badge](https://img.shields.io/badge/Official(node2)-6B88E3?logo=youtubegaming&label=Demo%20Lumina-mGPT)](http://106.14.2.150:10021/)&#160;
@@ -14,9 +16,11 @@
 <img src="assets/demos.png">
 
 ## 📰 News
+
 **[2024-07-08] 🎉🎉🎉 Lumina-mGPT is released! 🎉🎉🎉**
 
 ## ⚙️ Installation
+
 See [INSTALL.md](./INSTALL.md) for detailed instructions.
 
 Note that the Lumina-mGPT implementation heavily relies on
@@ -28,15 +32,19 @@ LLM-centered multimodal tasks. Make sure it is installed correctly as a python p
 > [!Note]
 >
 > Before using the Lumina-mGPT model, run
-> ``` bash
+>
+> ```bash
 > # bash
 > cd lumina_mgpt
 > ```
+>
 > to enter the directory of the Lumina-mGPT implementation.
 
 ### Perpetration
+
 Since currently the Chameleon implementation in transformers does not contain the VQ-VAE decoder, please manually download the original VQ-VAE weights [provided by Meta](https://github.com/facebookresearch/chameleon) and
 put them to the following directory:
+
 ```
 Lumina-mGPT
 - lumina_mgpt/
@@ -51,20 +59,26 @@ Lumina-mGPT
 ```
 
 ### Local Gradio Demos
+
 We have prepared three different Gradio demos, each showcasing unique functionalities, to help you quickly become familiar with the capabilities of the Lumina-mGPT models.
 
 #### 1. [demos/demo_image_generation.py](./Lumina-mGPT/demos/demo_image_generation.py)
+
 This demo is customized for Image Generation tasks, where you can input a text description and generate a corresponding image.
 To host this demo, run:
-``` bash
+
+```bash
 # Note to set the `--target_size` argument consistent with the checkpoint
 python -u demos/demo_image_generation.py \
 --pretrained_path Alpha-VLLM/Lumina-mGPT-7B-768 \
 --target_size 768
 ```
+
 #### 2. [demos/demo_image2image.py](./Lumina-mGPT/demos/demo_image2image.py)
+
 This demo is designed for models trained with Omni-SFT. you can conveniently switch between the multiple downstream tasks using this demo.
-``` bash
+
+```bash
 # Note to set the `--target_size` argument consistent with the checkpoint
 python -u demos/demo_image2image.py \
 --pretrained_path Alpha-VLLM/Lumina-mGPT-7B-768-Omni \
@@ -72,8 +86,10 @@ python -u demos/demo_image2image.py \
 ```
 
 #### 3. [demos/demo_freeform.py](./Lumina-mGPT/demos/demo_freeform.py)
+
 This is a powerful demo with minimal constraint on the input format. It supports flexible interation and is suitable for in-deep exploration.
-``` bash
+
+```bash
 # Note to set the `--target_size` argument consistent with the checkpoint
 python -u demos/demo_freeform.py \
 --pretrained_path Alpha-VLLM/Lumina-mGPT-7B-768-Omni \
@@ -81,7 +97,9 @@ python -u demos/demo_freeform.py \
 ```
 
 ### Simple Inference
+
 The simplest code for Lumina-mGPT inference:
+
 ```python
 from inference_solver import FlexARInferenceSolver
 from PIL import Image
@@ -164,19 +182,18 @@ new_image = generated[1][0]
 
 **7B models**
 
-| Model        | Size | Huggingface                                                  |
-| ------------ | ---- | ------------------------------------------------------------ |
-| FP-SFT@512   | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-512](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-512) |
-| FP-SFT@768   | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-768](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-768) |
+| Model        | Size | Huggingface                                                                              |
+| ------------ | ---- | ---------------------------------------------------------------------------------------- |
+| FP-SFT@512   | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-512](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-512)       |
+| FP-SFT@768   | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-768](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-768)       |
 | Omni-SFT@768 | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-768-Omni](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-Omni) |
-| FP-SFT@1024  | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-1024](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-1024) |
-
+| FP-SFT@1024  | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-1024](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-1024)     |
 
 **34B models**
 
-| Model        | Size | Huggingface                                                  |
-| ------------ | ---- | ------------------------------------------------------------ |
-| FP-SFT@512   | 34B  | [Alpha-VLLM/Lumina-mGPT-34B-512](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-34B-512) |
+| Model      | Size | Huggingface                                                                          |
+| ---------- | ---- | ------------------------------------------------------------------------------------ |
+| FP-SFT@512 | 34B  | [Alpha-VLLM/Lumina-mGPT-34B-512](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-34B-512) |
 
 More checkpoints coming soon.
 
@@ -184,3 +201,17 @@ More checkpoints coming soon.
 
 - [X] Inference code
 - [ ] Training code (coming in 2 or 3 weeks)
+
+## 📄 Citation
+
+```
+@misc{liu2024lumina-mgpt,
+      title={Lumina-mGPT: Illuminate Flexible Photorealistic Text-to-Image Generation with Multimodal Generative Pretraining},
+      author={Dongyang Liu and Shitian Zhao and Le Zhuo and Weifeng Lin and Yu Qiao and Hongsheng Li and Peng Gao},
+      year={2024},
+      eprint={2408.02657},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2408.02657},
+}
+```
