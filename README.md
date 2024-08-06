@@ -202,6 +202,9 @@ More checkpoints coming soon.
 - [X] Inference code
 - [ ] Training code (coming in 2 or 3 weeks)
 
+## 🔥 Hiring
+We are hiring interns, postdocs, and full-time researchers at the General Vision Group, Shanghai AI Lab, with a focus on multi-modality and vision foundation models. If you are interested, please contact gaopengcuhk@gmail.com.
+
 ## 📄 Citation
 
 ```
