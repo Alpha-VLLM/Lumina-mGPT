@@ -4,7 +4,7 @@
 
 # Lumina-mGPT
 
-<b> A family of multimodal autoregressive models capable of various vision and language tasks, particularly excelling in generating flexible photorealistic images from text descriptions. </b>
+<b> A family of multimodal autoregressive models capable of various vision and language tasks, particularly excelling in generating flexible photorealistic images from text descriptions. 👋 join our <a href="http://imagebind-llm.opengvlab.com/qrcode/" target="_blank">WeChat</a> </b>
 
 [![Lumina-mGPT](https://img.shields.io/badge/Paper-Lumina--mGPT-2b9348.svg?logo=arXiv)](https://arxiv.org/abs/2408.02657)&#160;
 
@@ -191,7 +191,7 @@ new_image = generated[1][0]
 | ------------ | ---- | ---------------------------------------------------------------------------------------- |
 | FP-SFT@512   | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-512](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-512)       |
 | FP-SFT@768   | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-768](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-768)       |
-| Omni-SFT@768 | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-768-Omni](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-Omni) |
+| Omni-SFT@768 | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-768-Omni](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-768-Omni) |
 | FP-SFT@1024  | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-1024](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-1024)     |
 
 **34B models**
@@ -206,6 +206,9 @@ More checkpoints coming soon.
 
 - [X] Inference code
 - [ ] Training code (coming in 2 or 3 weeks)
+
+## 🔥 Open positions
+We are hiring interns, postdocs, and full-time researchers at the General Vision Group, Shanghai AI Lab, with a focus on multi-modality and vision foundation models. If you are interested, please contact gaopengcuhk@gmail.com.
 
 ## 📄 Citation
 
