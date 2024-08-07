@@ -180,6 +180,11 @@ new_image = generated[1][0]
 
 ## 🤗 Checkpoints
 
+**Configurations**
+
+<img src="assets/config2.jpg">
+<img src="assets/config1.jpg">
+
 **7B models**
 
 | Model        | Size | Huggingface                                                                              |
