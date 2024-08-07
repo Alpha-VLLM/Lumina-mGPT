@@ -186,7 +186,7 @@ new_image = generated[1][0]
 | ------------ | ---- | ---------------------------------------------------------------------------------------- |
 | FP-SFT@512   | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-512](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-512)       |
 | FP-SFT@768   | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-768](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-768)       |
-| Omni-SFT@768 | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-768-Omni](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-Omni) |
+| Omni-SFT@768 | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-768-Omni](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-768-Omni) |
 | FP-SFT@1024  | 7B   | [Alpha-VLLM/Lumina-mGPT-7B-1024](https://huggingface.co/Alpha-VLLM/Lumina-mGPT-7B-1024)     |
 
 **34B models**
