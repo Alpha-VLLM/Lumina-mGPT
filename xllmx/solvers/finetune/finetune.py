@@ -176,8 +176,6 @@ class FinetuneSolverBase(ABC):
         parser.add_argument("--clip_grad", type=float, default=4.0, help="grad clipping norm")
 
         parser.add_argument("--init_from", default=None, type=str, help="path to checkpoint for model initialization")
-        # parser.add_argument('--create_start_point_when_needed', default=False, action="store_true",  # todo fix it
-        #                     help='where --init_from when the ')
 
         # Data parameters
         parser.add_argument("--data_config", default="/path/to/data/config/yaml", type=str, help="data config path")
@@ -264,7 +262,7 @@ class FinetuneSolverBase(ABC):
 
         self.logger.info(f"Start instantiating unwrapped model from {init_from}")
 
-        # todo only rank 0 instantiate, otherwise to meta
+        # only rank 0 instantiate, otherwise to meta
         unwrapped_model, tokenizer = self._model_func(init_from)
 
         if hasattr(unwrapped_model, "get_trainable_params"):
