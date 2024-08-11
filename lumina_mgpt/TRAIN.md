@@ -57,7 +57,7 @@ done
 ]
 ```
 
-**Rules:**
+*Rules:*
 
 1. The file is a list of dictionaries, and each dictionary represents a data point
 2. Each dictionary contains the key "conversations"
@@ -66,7 +66,7 @@ done
    1. Apparently, the number of occurrences of the `<|image|>` symbol should be equal to the number of images in the `image` key
 
 
-**How to adapt to your own format:**
+#### How to adapt to your own format:
 
 If you have your own data with a different format, you can easily adapt the code to deal with it by modifying the `pre_tokenize.py` file.
 We have prepared the space, which is in `ItemProcessor.process_item`, for adding your logic that converts data points of your own format into the standard format.
@@ -85,7 +85,7 @@ python -u pre_tokenize/concat_record.py \
 
 ## Training
 
-### Command:
+#### Command:
 We provide an example experiment scripts [exps/7B.sh](exps/7B.sh) for training the 7B model. Suppose you have access to a SLURM clsuter, you can run the following command to start training:
 
 ```bash
