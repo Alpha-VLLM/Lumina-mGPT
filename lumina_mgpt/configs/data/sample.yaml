@@ -1,0 +1,5 @@
+META:
+  - path: 'path/to/record1.json'
+  - path: 'path/to/record2.json'
+    ratio: 0.4  # In each epoch, sample only 40% of the data from this dataset
+  - path: 'path/to/record3.json'

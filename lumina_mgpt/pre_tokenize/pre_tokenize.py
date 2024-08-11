@@ -1,7 +1,11 @@
+import os
+import sys
+
+sys.path.append(os.path.abspath(__file__).rsplit("/", 2)[0])
+
 from argparse import ArgumentParser
 import json
 import math
-import os
 import pickle
 
 from data.convertsation import Conversation

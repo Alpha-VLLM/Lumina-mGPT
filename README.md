@@ -17,7 +17,9 @@
 
 ## 📰 News
 
-**[2024-07-08] 🎉🎉🎉 Lumina-mGPT is released! 🎉🎉🎉**
+- **[2024-08-11] 🎉🎉🎉 Training codes and documents are released! 🎉🎉🎉**
+
+- **[2024-07-08] 🎉🎉🎉 Lumina-mGPT is released! 🎉🎉🎉**
 
 ## ⚙️ Installation
 
@@ -27,7 +29,10 @@ Note that the Lumina-mGPT implementation heavily relies on
 the [xllmx](./xllmx) module, which is evolved from [LLaMA2-Accessory](https://github.com/Alpha-VLLM/LLaMA2-Accessory) for supporting
 LLM-centered multimodal tasks. Make sure it is installed correctly as a python package before going on.
 
-## 📝 Usage
+## ⛽ Training
+See [lumina_mgpt/TRAIN.md](lumina_mgpt/TRAIN.md)
+
+## 📽️ Inference
 
 > [!Note]
 >
@@ -205,7 +210,7 @@ More checkpoints coming soon.
 ## 📑 Open-source Plan
 
 - [X] Inference code
-- [ ] Training code (coming in 2 or 3 weeks)
+- [X] Training code
 
 ## 🔥 Open positions
 We are hiring interns, postdocs, and full-time researchers at the General Vision Group, Shanghai AI Lab, with a focus on multi-modality and vision foundation models. If you are interested, please contact gaopengcuhk@gmail.com.

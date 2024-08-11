@@ -45,6 +45,7 @@ class Solver(FinetuneSolverBase):
         parser.add_argument("--unmask_image_logits", action="store_false", dest="mask_image_logits")
         parser.add_argument("--dropout", type=float, default=0.0)
         parser.add_argument("--z_loss_weight", type=float, default=0.0)
+        parser.add_argument("--model_size", type=str, default="7B", choices=["7B", "34B"])
         return parser
 
     def _model_func(
@@ -86,8 +87,13 @@ class Solver(FinetuneSolverBase):
 
     def _make_and_save_starting_point(self, save_path: str) -> None:
 
+        pretrained_name = {
+            "7B": "Alpha-VLLM/Chameleon_7B_mGPT",
+            "34B": "Alpha-VLLM/Chameleon_34B_mGPT",
+        }[self.args.model_size]
+
         model = ChameleonXLLMXForConditionalGeneration.from_pretrained(
-            "Alpha-VLLM/Lumina-mGPT-7B-StartingPoint",
+            pretrained_name,
             max_position_embeddings=self.args.max_seq_len,
             mask_image_logits=self.args.mask_image_logits,
             dropout=self.args.dropout,
