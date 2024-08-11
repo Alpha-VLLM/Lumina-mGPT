@@ -1,8 +1,6 @@
 # Lumina-mGPT Training
 
-**This document gives the step-by-step tutorial for Lumina-mGPT training**
-
-For efficiency considerations, the multi-modal datasets are pre-tokenized into sequences of token ids. This leads to significantly faster training speed
+For efficiency considerations, the multi-modal datasets are pre-tokenized into sequences of token ids. This leads to significantly faster training
 
 ## Pre-tokenization
 
@@ -11,7 +9,7 @@ For efficiency considerations, the multi-modal datasets are pre-tokenized into s
 
 This stage tokenizes each data point, consisting of interleaved image and text, into a single sequence of integer tokens. After tokenization, the sequence is saved to disk for trainining-time usage. Together with the saved tokens, a json-formatted record file is also generated for indexing all the saved token files. For faster tokenization, you may use multiple GPUs and dispatch different subsets of data to them.
 
-### Command:
+#### Command:
 
 ```bash
 for i in {0..7}
@@ -26,7 +24,7 @@ do
 done
 ```
 
-### Format of Input File:
+#### Format of Input File:
 
 `in_filename` is expected to be a json file with the following format:
 ```python
@@ -100,7 +98,7 @@ Otherwise, if your want to use `torchrun` for distributed training, you can make
 torchrun --torchrun_kwargs finetune_solver.py \
 ```
 
-### About the `--data_config` argument:
+#### About the `--data_config` argument:
 The ``--data_config`` argument should point to a `*.yaml` file, which is a meta file that gathers one or multiple record files.
 In other words, you may pre-tokenize multiple datasets independently and list the record files in the same data config file
 for joint training.
