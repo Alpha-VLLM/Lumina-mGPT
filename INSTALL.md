@@ -31,7 +31,7 @@ pip install -e .
 ```
 
 ### 4. Optional: Install Apex
-> [!Danger]
+> [!Caution]
 >
 > If you merely run inference, there is no need to install Apex.
 >
