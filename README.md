@@ -17,7 +17,7 @@
 
 ## 📰 News
 
-- **[2024-08-11] 🎉🎉🎉 Training codes and documents are released! 🎉🎉🎉**
+- **[2024-08-11] 🎉🎉🎉 [Training codes and documents](./lumina_mgpt/TRAIN.md) are released! 🎉🎉🎉**
 
 - **[2024-07-08] 🎉🎉🎉 Lumina-mGPT is released! 🎉🎉🎉**
 
