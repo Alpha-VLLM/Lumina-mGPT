@@ -279,9 +279,11 @@ class FlexARInferenceSolver:
         self.dtype = {"bf16": torch.bfloat16, "fp16": torch.float16, "fp32": torch.float32}[precision]
 
         self.model = ChameleonForConditionalGeneration.from_pretrained(
-            model_path, torch_dtype=self.dtype, device_map="cuda"
+            model_path,
+            torch_dtype=self.dtype,
+            device_map="cuda",
         )
-        self.item_processor = FlexARItemProcessor(with_decoder=True, target_size=target_size)
+        self.item_processor = FlexARItemProcessor(target_size=target_size)
 
     def get_streamer(self):
         return TextStreamer(self.item_processor.tokenizer)

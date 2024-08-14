@@ -64,7 +64,6 @@ class FlexARItemProcessor(MMConvItemProcessor):
         tokenizer="Alpha-VLLM/Lumina-mGPT-7B-768",
         conv_template=Conversation,
         target_size=512,
-        with_decoder=False,
     ):
 
         super().__init__(
