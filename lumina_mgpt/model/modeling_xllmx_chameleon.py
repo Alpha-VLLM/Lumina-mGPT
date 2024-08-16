@@ -47,8 +47,10 @@ class ChameleonXLLMXForConditionalGeneration(ChameleonForConditionalGeneration):
         additional_loss_dict = {}
         if self.config.z_loss_weight > 0:
             logits: torch.Tensor = result[1]
-            valid_mask = labels >= 0
-            z_loss = torch.logsumexp(logits, dim=-1).pow(2)[valid_mask].mean()
+            shift_logits = logits[..., :-1, :].contiguous()
+            shift_labels = labels[..., 1:].contiguous()
+            valid_mask = shift_labels >= 0
+            z_loss = torch.logsumexp(shift_logits, dim=-1).pow(2)[valid_mask].mean()
             additional_loss_dict["z_loss"] = (z_loss, self.config.z_loss_weight)
         return c_loss, additional_loss_dict
 

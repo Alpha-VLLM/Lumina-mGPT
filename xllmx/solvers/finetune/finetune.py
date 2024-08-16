@@ -51,6 +51,11 @@ class FinetuneSolverBase(ABC):
         self.logger = self.configure_logger()
         self.logger.info(args)
 
+        assert args.model_parallel_size == 1, (
+            "Model parallelism currently not supported, ",
+            "so please keep model_parallel_size to 1\n"
+            "Note that model parallelism is different from and orthogonal to FSDP"
+        )
         fs_init.initialize_model_parallel(args.model_parallel_size)
         self.global_rank = dist.get_rank()
         self.mp_rank = fs_init.get_model_parallel_rank()
@@ -367,8 +372,13 @@ class FinetuneSolverBase(ABC):
     def _make_and_save_starting_point(self, save_path: str):
         raise NotImplementedError(f"{self.__class__} has not implemented _make_and_save_starting_point()")
 
-    @staticmethod
-    def setup_fsdp_sync(model: nn.Module, data_parallel: str, precision: str, grad_precision: Optional[str]) -> FSDP:
+    def setup_fsdp_sync(self, model: nn.Module, data_parallel: str, precision: str, grad_precision: Optional[str]) -> FSDP:
+
+        if self.dp_rank == 0:
+            param_init_fn = None
+        else:
+            param_init_fn = lambda x: x.to_empty(device=torch.cuda.current_device(), recurse=False)
+
 
         model = FSDP(
             model,
@@ -399,6 +409,8 @@ class FinetuneSolverBase(ABC):
             sync_module_states=True,
             limit_all_gathers=True,
             use_orig_params=True,
+            param_init_fn=param_init_fn
+
         )
         torch.cuda.synchronize()
 

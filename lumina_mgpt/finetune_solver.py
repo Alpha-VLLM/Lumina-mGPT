@@ -56,7 +56,7 @@ class Solver(FinetuneSolverBase):
         # Only instantiate the model on rank0
         # Other ranks will receive the model weights from rank0 during FSDP wrapping (through `sync_module_states`)
         # See https://github.com/pytorch/pytorch/issues/105840
-        if self.global_rank == 0:
+        if self.dp_rank == 0:
             model = ChameleonXLLMXForConditionalGeneration.from_pretrained(
                 init_from,
                 max_position_embeddings=self.args.max_seq_len,
