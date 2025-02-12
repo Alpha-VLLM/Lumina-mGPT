@@ -350,26 +350,40 @@ class FlexARInferenceSolver:
         generated_images = []
         generation_result_processed = []
         i = 0
+        
+        tokens = torch.tensor(tokens, dtype=torch.int64, device=self.device)
+
         while i < len(tokens):
-            token_id = tokens[i]
+            token_id = tokens[i].item()
             if token_id == self.item_processor.token2id(self.item_processor.image_start_token):
                 cache = []
-                for j in range(i + 1, len(tokens)):
-                    if tokens[j] != self.item_processor.token2id(self.item_processor.image_end_token):
-                        cache.append(tokens[j])
-                        i = j + 1
-                    else:
-                        image = self.decode_image(cache)
-                        generated_images.append(image)
-                        generation_result_processed.append(self.item_processor.token2id("<|image|>"))
-                        i = j + 1
-                        break
+
+                equ_ids = torch.where(tokens[i+1:] == self.item_processor.token2id(self.item_processor.image_end_token))[0]
+                if len(equ_ids) > 0:
+                    first_equ_id = equ_ids[0].item()
+                    cache += tokens[i+1:i+1+first_equ_id].cpu().numpy().tolist()
+                    i = first_equ_id
+
+                image = self.decode_image(cache)
+                generated_images.append(image)
+                generation_result_processed.append(self.item_processor.token2id("<|image|>"))
+                i = first_equ_id + 1
+
+                # for j in range(i + 1, len(tokens)):
+                #     if tokens[j] != self.item_processor.token2id(self.item_processor.image_end_token):
+                #         cache.append(tokens[j])
+                #         i = j + 1
+                #     else:
+                #         image = self.decode_image(cache)
+                #         generated_images.append(image)
+                #         generation_result_processed.append(self.item_processor.token2id("<|image|>"))
+                #         i = j + 1
+                #         break
             else:
                 generation_result_processed.append(token_id)
                 i += 1
 
         generated = self.item_processor.tokenizer.decode(generation_result_processed)
-
         return generated, generated_images
 
     def decode_image(self, tokens: List[int]):
