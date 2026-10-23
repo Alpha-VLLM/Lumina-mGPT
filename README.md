@@ -67,7 +67,7 @@ Lumina-mGPT
 
 We have prepared three different Gradio demos, each showcasing unique functionalities, to help you quickly become familiar with the capabilities of the Lumina-mGPT models.
 
-#### 1. [demos/demo_image_generation.py](./Lumina-mGPT/demos/demo_image_generation.py)
+#### 1. [demos/demo_image_generation.py](./lumina_mgpt/demos/demo_image_generation.py)
 
 This demo is customized for Image Generation tasks, where you can input a text description and generate a corresponding image.
 To host this demo, run:
@@ -79,7 +79,7 @@ python -u demos/demo_image_generation.py \
 --target_size 768
 ```
 
-#### 2. [demos/demo_image2image.py](./Lumina-mGPT/demos/demo_image2image.py)
+#### 2. [demos/demo_image2image.py](./lumina_mgpt/demos/demo_image2image.py)
 
 This demo is designed for models trained with Omni-SFT. you can conveniently switch between the multiple downstream tasks using this demo.
 
@@ -90,7 +90,7 @@ python -u demos/demo_image2image.py \
 --target_size 768
 ```
 
-#### 3. [demos/demo_freeform.py](./Lumina-mGPT/demos/demo_freeform.py)
+#### 3. [demos/demo_freeform.py](./lumina_mgpt/demos/demo_freeform.py)
 
 This is a powerful demo with minimal constraint on the input format. It supports flexible interation and is suitable for in-deep exploration.
 
@@ -116,8 +116,10 @@ inference_solver = FlexARInferenceSolver(
     target_size=768,
 )
 
-q1 = f"Generate an image of 768x768 according to the following prompt:\n"
-     f"Image of a dog playing water, and a waterfall is in the background."
+q1 = (
+    "Generate an image of 768x768 according to the following prompt:\n"
+    "Image of a dog playing water, and a waterfall is in the background."
+)
 
 # generated: tuple of (generated response, list of generated images)
 generated = inference_solver.generate(
